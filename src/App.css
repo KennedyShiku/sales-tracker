@@ -1,97 +1,102 @@
-body {
+/* body {
   margin: 0;
   font-family: "Poppins", sans-serif;
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: #f5f8ff;
+  color: #1f2d3d;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100vh;
 }
 
-.container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.tracker-card {
-  background: #1a1a1a;
-  border: 1px solid #00ff99;
-  box-shadow: 0 0 20px rgba(0, 255, 153, 0.2);
-  border-radius: 6px;
-  padding: 2rem;
-  width: 90%;
-  max-width: 900px;
+.app {
   text-align: center;
+  width: 90%;
+  max-width: 700px;
+  background: white;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 50, 0.1);
 }
 
-h1 {
-  color: #00ff99;
-  margin-bottom: 1.5rem;
-}
-
-.form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
+h2 {
+  color: #2b3a67;
   margin-bottom: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: #3a4b7a;
 }
 
 input,
 select {
-  background: #222;
-  border: 1px solid #333;
-  color: #e0e0e0;
-  padding: 0.5rem;
-  border-radius: 4px;
-  width: 150px;
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d3dce6;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
 }
 
 button {
-  background: #00ff99;
-  color: #000;
+  background-color: #3578e5;
+  color: white;
   border: none;
+  border-radius: 6px;
   padding: 0.6rem 1rem;
-  border-radius: 4px;
   cursor: pointer;
+  margin: 0.4rem;
   transition: 0.3s;
 }
 
 button:hover {
-  box-shadow: 0 0 10px #00ff99;
+  background-color: #285fc1;
 }
 
-table {
+.model-setup,
+.tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.record {
+  background: #f0f4ff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
   width: 100%;
-  border-collapse: collapse;
+}
+
+.tips-section {
   margin-top: 1rem;
-}
-
-th,
-td {
-  border-bottom: 1px solid #333;
-  padding: 0.5rem;
-}
-
-input[type="text"],
-input[type="date"] {
   width: 100%;
-  background: transparent;
-  border: none;
-  color: #e0e0e0;
-  text-align: center;
 }
 
-input:focus {
-  outline: none;
-  border-bottom: 1px solid #00ff99;
+.tip-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.totals {
-  margin-top: 1rem;
+.summary {
+  margin: 1rem 0;
+  font-size: 1.1rem;
   font-weight: bold;
-  color: #00ff99;
 }
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+} */
