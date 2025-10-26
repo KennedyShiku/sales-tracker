@@ -449,6 +449,8 @@
 //   );
 // }
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 /*
 Tracker:
@@ -458,6 +460,7 @@ Tracker:
 - Records table with inline editing + delete.
 - Export CSV includes tips and totals summary.
 - Thin horizontal daily goal progress bar (reads kk_goal from localStorage).
+- Wizard levels with toasts for level-ups.
 */
 
 export default function Tracker({ models = [], setModels, onBack }) {
@@ -564,17 +567,35 @@ export default function Tracker({ models = [], setModels, onBack }) {
 
   const progress = goal > 0 ? Math.min((totalEarnings / goal) * 100, 100) : 0;
 
-  // export CSV (records + tips summary)
+  // Wizard level system
+  function getWizardLevel(total) {
+    if (total >= 3000) return { level: 6, title: "Master Wizard 🌟", next: null };
+    if (total >= 2000) return { level: 5, title: "Grand Mage ⚡", next: 3000 };
+    if (total >= 1000) return { level: 4, title: "Sorcerer 🧙", next: 2000 };
+    if (total >= 500) return { level: 3, title: "Enchanter 🔮", next: 1000 };
+    if (total >= 100) return { level: 2, title: "Spellcaster ✨", next: 500 };
+    return { level: 1, title: "Novice Wizard 🪄", next: 100 };
+  }
+
+  const { level, title, next } = getWizardLevel(totalEarnings);
+
+  // Always show toast when total crosses a new level
+  const [prevLevel, setPrevLevel] = useState(level);
+  useEffect(() => {
+    if (level > prevLevel) {
+      toast.success(`🎉 Level Up! You’ve become a ${title}`, {
+        position: "top-center",
+        autoClose: 2500,
+        theme: "colored",
+        style: { backgroundColor: "var(--accent)", color: "white", fontWeight: 600 },
+      });
+      setPrevLevel(level);
+    }
+  }, [level]);
+
+  // export CSV
   function exportCSV() {
-    const headers = [
-      "Model",
-      "Fan Name",
-      "PPV Sent",
-      "Sale",
-      "Price",
-      "Notes",
-      "Date",
-    ];
+    const headers = ["Model", "Fan Name", "PPV Sent", "Sale", "Price", "Notes", "Date"];
     const rows = records.map((r) =>
       [
         `"${r.model.replace(/"/g, '""')}"`,
@@ -602,7 +623,7 @@ export default function Tracker({ models = [], setModels, onBack }) {
     URL.revokeObjectURL(url);
   }
 
-  // allow quick adding of models if user wants
+  // allow quick adding of models
   function addModelQuick() {
     const name = prompt("Add a new model name:");
     if (!name) return;
@@ -621,6 +642,25 @@ export default function Tracker({ models = [], setModels, onBack }) {
       <h1 className="panel-title">Kennedy’s Tracker</h1>
       <p className="panel-sub">Quickly log PPV sales — everything centered and tidy.</p>
 
+      {/* Wizard Rank Display */}
+      <div style={{
+        marginTop: "10px",
+        marginBottom: "10px",
+        padding: "8px 10px",
+        borderRadius: "8px",
+        background: "var(--glass)",
+        textAlign: "center",
+        fontWeight: "500"
+      }}>
+        <div>{title} — Level {level}</div>
+        {next && (
+          <div style={{ fontSize: "12px", color: "var(--muted)" }}>
+            ${Math.max(0, next - totalEarnings).toFixed(2)} until next level
+          </div>
+        )}
+      </div>
+
+      {/* rest of your form unchanged */}
       <div className="form-grid">
         <div className="field">
           <label className="label">Model</label>
@@ -769,6 +809,8 @@ export default function Tracker({ models = [], setModels, onBack }) {
         <button className="btn danger" onClick={resetRecords}>Reset Records & Tips</button>
         <button className="btn link" onClick={onBack}>← Back to Models</button>
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
