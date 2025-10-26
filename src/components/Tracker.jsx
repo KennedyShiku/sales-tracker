@@ -451,6 +451,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import confetti from "canvas-confetti";
 
 /*
 Tracker:
@@ -460,7 +461,7 @@ Tracker:
 - Records table with inline editing + delete.
 - Export CSV includes tips and totals summary.
 - Thin horizontal daily goal progress bar (reads kk_goal from localStorage).
-- Wizard levels with toasts for level-ups.
+- Wizard levels with toasts + confetti for level-ups.
 */
 
 export default function Tracker({ models = [], setModels, onBack }) {
@@ -567,7 +568,7 @@ export default function Tracker({ models = [], setModels, onBack }) {
 
   const progress = goal > 0 ? Math.min((totalEarnings / goal) * 100, 100) : 0;
 
-  // Wizard level system
+  // Wizard level system (money thresholds)
   function getWizardLevel(total) {
     if (total >= 3000) return { level: 6, title: "Master Wizard 🌟", next: null };
     if (total >= 2000) return { level: 5, title: "Grand Mage ⚡", next: 3000 };
@@ -578,24 +579,44 @@ export default function Tracker({ models = [], setModels, onBack }) {
   }
 
   const { level, title, next } = getWizardLevel(totalEarnings);
-
-  // Always show toast when total crosses a new level
   const [prevLevel, setPrevLevel] = useState(level);
+
+  // Level up toast + confetti (always show when crossing into a higher level)
   useEffect(() => {
     if (level > prevLevel) {
+      // toast
       toast.success(`🎉 Level Up! You’ve become a ${title}`, {
         position: "top-center",
         autoClose: 2500,
         theme: "colored",
         style: { backgroundColor: "var(--accent)", color: "white", fontWeight: 600 },
       });
+
+      // Confetti burst (classic style)
+      const duration = 2000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+
       setPrevLevel(level);
     }
-  }, [level]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level]); // we intentionally only react to level changes
 
-  // export CSV
+  // export CSV (records + tips summary)
   function exportCSV() {
-    const headers = ["Model", "Fan Name", "PPV Sent", "Sale", "Price", "Notes", "Date"];
+    const headers = [
+      "Model",
+      "Fan Name",
+      "PPV Sent",
+      "Sale",
+      "Price",
+      "Notes",
+      "Date",
+    ];
     const rows = records.map((r) =>
       [
         `"${r.model.replace(/"/g, '""')}"`,
@@ -660,7 +681,6 @@ export default function Tracker({ models = [], setModels, onBack }) {
         )}
       </div>
 
-      {/* rest of your form unchanged */}
       <div className="form-grid">
         <div className="field">
           <label className="label">Model</label>
